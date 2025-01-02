@@ -8,7 +8,7 @@ Exploring CUDA programming concepts and GPU acceleration techniques to better un
 
 Following the book: Programming Massively Parallel Processors (4th edition).
 
-Highly recommend the book if you are interested in this topic!
+Highly recommend the book if you are interested in this topic.
 
 ## Prerequisites
 
@@ -16,3 +16,17 @@ Highly recommend the book if you are interested in this topic!
 - CUDA Toolkit
 - C++ compiler compatible with CUDA
 - CMake (recommended for building)
+
+## Concepts
+- [x] CUDA programming model
+- [x] Memory hierarchy
+- [x] Warp scheduling & divergence
+- [x] Tiling
+- [x] Memory coalescing
+- [ ] Thread coarsening
+- [ ] CUDA graphs
+- [ ] cuBLAS
+- [ ] cuDNN
+- [ ] CUTLASS
+- [ ] Tensor cores
+- [ ] Nsight profiler
