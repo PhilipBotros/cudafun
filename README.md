@@ -23,10 +23,16 @@ Highly recommend the book if you are interested in this topic.
 - [x] Warp scheduling & divergence
 - [x] Tiling
 - [x] Memory coalescing
-- [ ] Thread coarsening
+- [x] Thread coarsening
+- [x] Constant memory
 - [ ] CUDA graphs
+- [ ] Tensor cores
+
+## Libraries
 - [ ] cuBLAS
 - [ ] cuDNN
 - [ ] CUTLASS
-- [ ] Tensor cores
+- [ ] NCCL
+
+## Tools
 - [ ] Nsight profiler
