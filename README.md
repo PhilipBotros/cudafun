@@ -25,6 +25,8 @@ Highly recommend the book if you are interested in this topic.
 - [x] Memory coalescing
 - [x] Thread coarsening
 - [x] Constant memory
+- [x] Cooperative groups
+- [ ] Warp shuffles
 - [ ] CUDA graphs
 - [ ] Tensor cores
 
