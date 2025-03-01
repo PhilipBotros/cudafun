@@ -27,8 +27,8 @@ Highly recommend the book if you are interested in this topic.
 - [x] Constant memory
 - [x] Cooperative groups
 - [x] Warp shuffles
-- [ ] CUDA graphs
-- [ ] Tensor cores
+- [x] CUDA graphs
+- [x] Tensor cores
 
 ## Libraries
 - [ ] cuBLAS
