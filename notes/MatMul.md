@@ -1,15 +1,41 @@
-A square matrix multiplication takes O(N^3) operations, for every N^2 output elements we perform 2N operations.
-A naive implementation has O(N^3) global memory accesses, again for every N^2 output elements we fetch 2N elements.
+## **Matrix Multiplication Computational Complexity**
+For a square matrix multiplication of size \(N \times N\):
 
-OP/B = O(N^3) / O(N^3) / 4 bytes = 1/4 for FP32
+- It requires **\(O(N^3)\) operations**, since for every \(N^2\) output elements, we perform **\(2N\)** operations.
+- A naive implementation has **\(O(N^3)\) global memory accesses**, where for every \(N^2\) output elements, we fetch **\(2N\)** elements from global memory.
 
-Given that fetching from global memory takes ~300-600 cycles and a fused multiply add is ~4 cycles we are heavy memory bound.
+## **Operational Intensity (OP/B)**
+Operational intensity (OP/B) is defined as the number of operations per byte of memory access.
 
-Tiling reduces the number of global memory fetches by a factor of N/T, where T is the tile size.
+For FP32:
+```
+OP/B = O(N^3) / (O(N^3) * 4 bytes) = 1/4
+```
 
-OP/B = T/4 for FP32
+Given that:
+- **Fetching from global memory** takes **~300-600 cycles**.
+- **A fused multiply-add (FMA) operation** takes **~4 cycles**.
 
-Thread coarsening further reduces the number of global memory fetches by a factor of C, where C is the coarsening factor. This is at the potential cost of decreasing the parallelism of the kernel so has to be tuned accordingly.
+Since memory fetches are significantly more expensive than arithmetic operations, **this makes matrix multiplication heavily memory-bound**.
 
-OP/B = TxC / 4 for FP32
+---
+
+## **Tiling for Memory Optimization**
+Tiling reduces the number of global memory fetches by a factor of \(N/T\), where \(T\) is the **tile size**. This increases **data reuse** and reduces redundant global memory accesses.
+
+For FP32:
+```
+OP/B = T / 4
+```
+---
+
+## **Thread Coarsening for Further Optimization**
+Thread coarsening reduces **global memory fetches** by a factor of **\(C\)** (coarsening factor). This means each thread computes **\(C\)** output elements instead of just one.
+
+However, **coarsening too much reduces parallelism**, so it needs **tuning**.
+
+For FP32:
+```
+OP/B = (T * C) / 4
+```
 
