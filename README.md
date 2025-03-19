@@ -38,3 +38,6 @@ Highly recommend the book if you are interested in this topic.
 
 ## Tools
 - [ ] Nsight profiler
+
+## Resources
+- [Useful resources](resources/README.md)
