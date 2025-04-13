@@ -31,7 +31,7 @@ Highly recommend the book if you are interested in this topic.
 - [x] Tensor cores
 
 ## Libraries
-- [ ] cuBLAS
+- [x] cuBLAS
 - [ ] cuDNN
 - [ ] CUTLASS
 - [ ] NCCL
