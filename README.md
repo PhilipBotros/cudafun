@@ -33,7 +33,7 @@ Highly recommend the book if you are interested in this topic.
 ## Libraries
 - [x] cuBLAS
 - [x] cuDNN
-- [ ] CUTLASS
+- [x] CUTLASS
 - [ ] NCCL
 
 ## Tools
