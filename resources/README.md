@@ -17,6 +17,8 @@ Some links to different resources I found useful over the past few months.
 ## Books
 - [Programming Massively Parallel Processors (4th edition)](https://www.amazon.com/Programming-Massively-Parallel-Processors-4th/dp/1119744213)
 
+- [TPU Scaling Book](https://jax-ml.github.io/scaling-book/)
+
 ## Tutorials    
 - [GPU Glossary (Modal)](https://modal.com/gpu-glossary)
 
@@ -27,3 +29,6 @@ Some links to different resources I found useful over the past few months.
 - [Outperforming cuBLAS on H100: a Worklog (Pranjal Shankhdar)](https://cudaforfun.substack.com/p/outperforming-cublas-on-h100-a-worklog)
 - [What Every Developer Should Know About GPU Computing (Abhinav Upadhyay)](https://blog.codingconfessions.com/p/gpu-computing)
 - [Learning CUDA by optimizing matrix-vector multiplication (SGEMV) for cuBLAS-like performance - A worklog (Maharshi Pandya)](https://maharshi.bearblog.dev/optimizing-sgemv-cuda/)
+- [Matrix Multiplication on Blackwell (Modular)](https://www.modular.com/blog/matrix-multiplication-on-nvidias-blackwell-part-1-introduction)
+- [We reverse-engineered Flash Attention 4 (Modal)](https://modal.com/blog/reverse-engineer-flash-attention-4)
+- [TPU Deep Dive (Henry Ko)](https://henryhmko.github.io/posts/tpu/tpu.html)
