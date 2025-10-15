@@ -32,3 +32,4 @@ Some links to different resources I found useful over the past few months.
 - [Matrix Multiplication on Blackwell (Modular)](https://www.modular.com/blog/matrix-multiplication-on-nvidias-blackwell-part-1-introduction)
 - [We reverse-engineered Flash Attention 4 (Modal)](https://modal.com/blog/reverse-engineer-flash-attention-4)
 - [TPU Deep Dive (Henry Ko)](https://henryhmko.github.io/posts/tpu/tpu.html)
+- [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels (Aleksa Gordic)](https://www.aleksagordic.com/blog/matmul)
