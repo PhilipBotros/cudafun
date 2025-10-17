@@ -13,7 +13,6 @@ Some links to different resources I found useful over the past few months.
 - [Notes on AI Hardware (Benjamin Spector)](https://www.youtube.com/watch?v=PlraH57ey4k)
 - [Intro to CUDA (Josh Holloway)](https://www.youtube.com/watch?v=4APkMJdiudU&list=PLC6u37oFvF40BAm7gwVP7uDdzmW83yHPe)
 
-
 ## Books
 - [Programming Massively Parallel Processors (4th edition)](https://www.amazon.com/Programming-Massively-Parallel-Processors-4th/dp/1119744213)
 
@@ -33,3 +32,8 @@ Some links to different resources I found useful over the past few months.
 - [We reverse-engineered Flash Attention 4 (Modal)](https://modal.com/blog/reverse-engineer-flash-attention-4)
 - [TPU Deep Dive (Henry Ko)](https://henryhmko.github.io/posts/tpu/tpu.html)
 - [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels (Aleksa Gordic)](https://www.aleksagordic.com/blog/matmul)
+
+## Practice Tools
+- [LeetGPU](https://leetgpu.com/)
+- [GPU puzzles (Sasha Rush)](https://github.com/srush/GPU-Puzzles0)
+- [Mojo GPU puzzles](https://puzzles.modular.com/introduction.html)
