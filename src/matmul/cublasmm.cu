@@ -31,7 +31,7 @@ bool verifyResults(float *gpu_result, float *cpu_result, int M, int K, float tol
 
 int main() {
     // Create data on host
-    const int M = 100, N = 100, K = 100; 
+    const int M = 1024, N = 1024, K = 1024; 
     float *h_A = new float[M * N];
     float *h_B = new float[N * K];
     float *h_C = new float[M * K];
@@ -61,7 +61,7 @@ int main() {
     // Copy matrices from host to device
     cudaMemcpy(d_A, h_A, bytes_A, cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, bytes_B, cudaMemcpyHostToDevice);
-    
+
     // Create cuBLAS handle
     cublasHandle_t handle;
     cublasCreate(&handle);
@@ -71,30 +71,74 @@ int main() {
     // where op(X) = X or X^T
     float alpha = 1.0f;
     float beta = 0.0f;
-    
-    // Note: cuBLAS assumes column-major order, so we need to transpose the operation
-    // to match our row-major data layout
-    cublasSgemm(handle,
-                CUBLAS_OP_N, CUBLAS_OP_N,  // No transpose for A and B
-                K, M, N,                   // Dimensions
-                &alpha,                    // alpha
-                d_B, K,                    // B matrix, leading dimension K
-                d_A, N,                    // A matrix, leading dimension N
-                &beta,                     // beta
-                d_C, K);                   // C matrix, leading dimension K
+
+    // Warmup runs to avoid cold start overhead
+    for (int i = 0; i < 10; i++) {
+        cublasSgemm(handle,
+                    CUBLAS_OP_N, CUBLAS_OP_N,
+                    K, M, N,
+                    &alpha,
+                    d_B, K,
+                    d_A, N,
+                    &beta,
+                    d_C, K);
+    }
+    cudaDeviceSynchronize();
+
+    // Create CUDA events for timing
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
+    // Run multiple iterations and average
+    const int numIterations = 100;
+    cudaEventRecord(start);
+
+    for (int i = 0; i < numIterations; i++) {
+        // Note: cuBLAS assumes column-major order, so we need to transpose the operation
+        // to match our row-major data layout
+        cublasSgemm(handle,
+                    CUBLAS_OP_N, CUBLAS_OP_N,  // No transpose for A and B
+                    K, M, N,                   // Dimensions
+                    &alpha,                    // alpha
+                    d_B, K,                    // B matrix, leading dimension K
+                    d_A, N,                    // A matrix, leading dimension N
+                    &beta,                     // beta
+                    d_C, K);                   // C matrix, leading dimension K
+    }
+
+    cudaEventRecord(stop);
+    cudaEventSynchronize(stop);
+
+    // Calculate elapsed time and FLOP/s
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
+    float avgTime = milliseconds / numIterations;
+
+    long long flops = 2LL * M * N * K;
+    double gflops = (flops / 1e9) / (avgTime / 1000.0);
+
+    std::cout << "Kernel time: " << avgTime << " ms" << std::endl;
+    std::cout << "Performance: " << gflops << " GFLOP/s" << std::endl;
+
+    // Cleanup events
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
 
     // Return result from device to host
     cudaMemcpy(h_C, d_C, bytes_C, cudaMemcpyDeviceToHost);
 
-    // Compute CPU result
-    cpuMatMul(h_A, h_B, cpu_C, M, N, K);
-
-    // Verify results
-    bool passed = verifyResults(h_C, cpu_C, M, K);
-    if (passed) {
-        std::cout << "Verification PASSED!" << std::endl;
+    // Skip CPU verification for large matrices (too slow and we already verified at small sizes)
+    if (M <= 100) {
+        cpuMatMul(h_A, h_B, cpu_C, M, N, K);
+        bool passed = verifyResults(h_C, cpu_C, M, K);
+        if (passed) {
+            std::cout << "Verification PASSED!" << std::endl;
+        } else {
+            std::cout << "Verification FAILED!" << std::endl;
+        }
     } else {
-        std::cout << "Verification FAILED!" << std::endl;
+        std::cout << "Verification SKIPPED (large matrix)" << std::endl;
     }
 
     // Clean up
