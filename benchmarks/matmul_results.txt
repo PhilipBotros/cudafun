@@ -1,0 +1,145 @@
+Matrix Multiplication Kernel Performance Results
+================================================
+
+Hardware: Nvidia L4 GPU
+
+Test Configuration:
+- Matrix sizes: 100x100 (basicmm, tiledmm, cublasmm, tiledcoarsenedmm), 128x128 (tensorcoremm)
+- Data type: float32 (basicmm, tiledmm, cublasmm, tiledcoarsenedmm), float16 (tensorcoremm)
+- Timing: 10 warmup runs + 100 iterations averaged to eliminate launch overhead
+
+Results (sorted by performance):
+---------------------------------
+
+Kernel Name              | Time (ms)  | Performance (GFLOP/s) | Speedup vs Naive
+-------------------------|------------|----------------------|------------------
+tensorcoremm (fp16)      | 0.00287    | 1463.35             | 3.28x
+tiledmm                  | 0.00438    | 456.34              | 1.02x
+basicmm (naive)          | 0.00448    | 446.01              | 1.00x (baseline)
+cublasmm                 | 0.01087    | 183.91              | 0.41x
+tiledcoarsenedmm         | 0.01143    | 175.01              | 0.39x
+
+Detailed Results:
+-----------------
+
+1. tensorcoremm (Tensor cores with WMMA API)
+   Matrix size: 128x128
+   Precision: float16 input, float32 accumulator
+   Kernel time: 0.00286624 ms
+   Performance: 1463.35 GFLOP/s
+   Notes: Best performance using hardware tensor cores
+
+2. tiledmm (Tiled with shared memory)
+   Matrix size: 100x100
+   Precision: float32
+   Kernel time: 0.00438272 ms
+   Performance: 456.34 GFLOP/s
+   Notes: Slight improvement over naive due to shared memory usage
+
+3. basicmm (Naive implementation)
+   Matrix size: 100x100
+   Precision: float32
+   Kernel time: 0.00448416 ms
+   Performance: 446.01 GFLOP/s
+   Notes: Baseline implementation with no optimizations
+
+4. cublasmm (cuBLAS library)
+   Matrix size: 100x100
+   Precision: float32
+   Kernel time: 0.0108749 ms
+   Performance: 183.91 GFLOP/s
+   Notes: Slower than expected - library overhead may dominate for small matrices
+
+5. tiledcoarsenedmm (Tiled with thread coarsening)
+   Matrix size: 100x100
+   Precision: float32
+   Kernel time: 0.0113869 ms
+   Performance: 175.64 GFLOP/s
+   Notes: Thread coarsening adds overhead for small matrices
+
+Key Insights:
+-------------
+- Tensor cores provide 3.28x speedup over naive implementation (different matrix size)
+- For small 100x100 matrices, naive and tiled implementations are similar (~450 GFLOP/s)
+- Library overhead (cuBLAS) and additional complexity (thread coarsening) hurt performance at small sizes
+- Optimizations like tiling and cuBLAS would likely show larger benefits with bigger matrices (1024x1024+)
+- The initial measurements showed wrong results due to:
+  1. No warmup runs (cold start penalty)
+  2. Single kernel launch timing (launch overhead dominated)
+  3. GPU frequency ramping not accounted for
+
+
+================================================================================
+RESULTS FOR LARGER MATRICES (1024x1024)
+================================================================================
+
+Hardware: Nvidia L4 GPU
+
+Test Configuration:
+- Matrix sizes: 1024x1024 for all kernels
+- Data type: float32 (basicmm, tiledmm, cublasmm, tiledcoarsenedmm), float16 (tensorcoremm)
+- Timing: 10 warmup runs + 100 iterations averaged
+- Total FLOPs: 2 * 1024^3 = 2.147 billion FLOPs per matmul
+
+Results (sorted by performance):
+---------------------------------
+
+Kernel Name              | Time (ms)  | Performance (GFLOP/s) | Speedup vs Naive
+-------------------------|------------|----------------------|------------------
+tensorcoremm (fp16)      | 0.161      | 13330.5             | 8.83x
+cublasmm                 | 0.161      | 13310.2             | 8.82x
+tiledcoarsenedmm         | 0.906      | 2370.4              | 1.57x
+tiledmm                  | 1.012      | 2121.6              | 1.41x
+basicmm (naive)          | 1.422      | 1509.9              | 1.00x (baseline)
+
+Detailed Results (1024x1024):
+-----------------------------
+
+1. tensorcoremm (Tensor cores with WMMA API)
+   Matrix size: 1024x1024
+   Precision: float16 input, float32 accumulator
+   Kernel time: 0.161096 ms
+   Performance: 13330.5 GFLOP/s
+   Speedup vs naive: 8.83x
+   Notes: Exceptional performance using hardware tensor cores
+
+2. cublasmm (cuBLAS library)
+   Matrix size: 1024x1024
+   Precision: float32
+   Kernel time: 0.161341 ms
+   Performance: 13310.2 GFLOP/s
+   Speedup vs naive: 8.82x
+   Notes: cuBLAS shines at larger matrices, nearly matches tensor cores!
+
+3. tiledcoarsenedmm (Tiled with thread coarsening)
+   Matrix size: 1024x1024
+   Precision: float32
+   Kernel time: 0.905964 ms
+   Performance: 2370.4 GFLOP/s
+   Speedup vs naive: 1.57x
+   Notes: Thread coarsening improves performance by reducing block launches and increasing compute per thread
+
+4. tiledmm (Tiled with shared memory)
+   Matrix size: 1024x1024
+   Precision: float32
+   Kernel time: 1.01221 ms
+   Performance: 2121.6 GFLOP/s
+   Speedup vs naive: 1.41x
+   Notes: Significant improvement over naive via shared memory
+
+5. basicmm (Naive implementation)
+   Matrix size: 1024x1024
+   Precision: float32
+   Kernel time: 1.42232 ms
+   Performance: 1509.9 GFLOP/s
+   Speedup vs naive: 1.00x (baseline)
+   Notes: Baseline performance
+
+Key Insights for Large Matrices:
+---------------------------------
+- Tensor cores deliver 8.83x speedup - this is the power of specialized hardware!
+- cuBLAS is nearly as fast as tensor cores (13.3 TFLOP/s) - highly optimized library
+- Thread coarsening (1.57x) outperforms simple tiling (1.41x) by amortizing block overhead
+- Tiled implementation shows 1.41x speedup over naive - shared memory optimization works
+- At large sizes, optimizations matter significantly more than at small sizes
+- Performance ranking: tensor/cuBLAS >> tiledcoarsened > tiled > naive
