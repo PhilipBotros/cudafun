@@ -32,8 +32,13 @@ Some links to different resources I found useful over the past few months.
 - [We reverse-engineered Flash Attention 4 (Modal)](https://modal.com/blog/reverse-engineer-flash-attention-4)
 - [TPU Deep Dive (Henry Ko)](https://henryhmko.github.io/posts/tpu/tpu.html)
 - [Inside NVIDIA GPUs: Anatomy of high performance matmul kernels (Aleksa Gordic)](https://www.aleksagordic.com/blog/matmul)
+- [Optimizing AlphaFold's Triangle Multiplicative Update: A First Look at GPU Performance Engineering (Matt Suiche)](https://www.msuiche.com/posts/optimizing-alphafolds-triangle-multiplicative-update-a-first-look-at-gpu-performance-engineering/)
 
 ## Practice Tools
 - [LeetGPU](https://leetgpu.com/)
 - [GPU puzzles (Sasha Rush)](https://github.com/srush/GPU-Puzzles0)
 - [Mojo GPU puzzles](https://puzzles.modular.com/introduction.html)
+
+## CPU 
+- [Matrix Multiplication on CPU(Marek Kolodziej)](https://marek.ai/matrix-multiplication-on-cpu.html)
+- [Fast Multidimensional Matrix Multiplication on CPU from Scratch (Simon Boehm)](https://siboehm.com/articles/22/Fast-MMM-on-CPU)
